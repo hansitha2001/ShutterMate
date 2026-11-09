@@ -131,6 +131,13 @@ function HomeScreen({ navigation }) {
 
 // SCREEN 2 - LESSON LIST
 function LessonsScreen({ navigation }) {
+  
+  <TextInput
+  placeholder="Search photography lessons..."
+  value={search}
+  onChangeText={setSearch}
+/>
+
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
 
