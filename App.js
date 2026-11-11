@@ -1,9 +1,4 @@
 
-import {
-  cameraSettings,
-  photographyTips
-} from "./src/data/guides";
-
 import React, {
   createContext,
   useContext,
@@ -22,22 +17,24 @@ import {
   Alert
 } from "react-native";
 
-
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {
-  NavigationContainer
-} from "@react-navigation/native";
 
-import {
-  createNativeStackNavigator
-} from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { lessons } from "./src/data/lessons";
+import {
+  cameraSettings,
+  photographyTips
+} from "./src/data/guides";
 
-// Shared application data
-const AppContext = createContext();
+import QuizScreen from "./src/screens/QuizScreen";
+import QuizHistoryScreen from "./src/screens/QuizHistoryScreen";
+
+// SHARED APPLICATION DATA
+
+const AppContext = createContext(null);
 
 const useApp = () => useContext(AppContext);
 
@@ -51,7 +48,8 @@ const categories = [
   "Lighting"
 ];
 
-// Reusable button
+// REUSABLE COMPONENTS
+
 function MenuButton({ title, onPress }) {
   return (
     <TouchableOpacity
@@ -63,14 +61,15 @@ function MenuButton({ title, onPress }) {
   );
 }
 
-// Reusable lesson card
 function LessonCard({ item, onPress }) {
   return (
     <TouchableOpacity
       style={styles.card}
       onPress={onPress}
     >
-      <Text style={styles.cardTitle}>{item.title}</Text>
+      <Text style={styles.cardTitle}>
+        {item.title}
+      </Text>
 
       <Text style={styles.category}>
         {item.category} • {item.level}
@@ -88,18 +87,53 @@ function LessonCard({ item, onPress }) {
 }
 
 // SCREEN 1 - HOME
+
 function HomeScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
-      {/* Your existing HomeScreen content */}
+      <Text style={styles.heading}>
+        Welcome to ShutterMate 📸
+      </Text>
 
-      {/* My Progress button */}
+      <Text style={styles.subtitle}>
+        Your Offline Photography Learning Companion
+      </Text>
+
+      <View style={styles.hero}>
+        <Text style={styles.heroTitle}>
+          Learn Photography Anywhere
+        </Text>
+
+        <Text style={styles.heroText}>
+          Explore photography lessons, camera settings,
+          practical tips and quizzes without an internet
+          connection.
+        </Text>
+      </View>
+
+      <Text style={styles.sectionTitle}>
+        Start Learning
+      </Text>
+
       <MenuButton
-        title="My Progress"
+        title="📚 Photography Lessons"
+        onPress={() => navigation.navigate("Lessons")}
+      />
+
+      <MenuButton
+        title="⭐ My Favorites"
+        onPress={() => navigation.navigate("Favorites")}
+      />
+
+      <MenuButton
+        title="📊 My Progress"
         onPress={() => navigation.navigate("Progress")}
       />
 
-      {/* Add these two new buttons */}
+      <Text style={styles.sectionTitle}>
+        Photography Guides
+      </Text>
+
       <TouchableOpacity
         style={guideStyles.card}
         onPress={() => navigation.navigate("CameraSettings")}
@@ -107,6 +141,7 @@ function HomeScreen({ navigation }) {
         <Text style={guideStyles.title}>
           📷 Camera Settings Guide
         </Text>
+
         <Text style={guideStyles.description}>
           Learn ISO, Aperture, Shutter Speed and more.
         </Text>
@@ -119,32 +154,57 @@ function HomeScreen({ navigation }) {
         <Text style={guideStyles.title}>
           📸 Photography Tips
         </Text>
+
         <Text style={guideStyles.description}>
           Discover useful photography techniques.
         </Text>
       </TouchableOpacity>
 
+      <Text style={styles.sectionTitle}>
+        Test Your Knowledge
+      </Text>
+
+      <TouchableOpacity
+        style={guideStyles.card}
+        onPress={() => navigation.navigate("Quiz")}
+      >
+        <Text style={guideStyles.title}>
+          🧠 Photography Quiz
+        </Text>
+
+        <Text style={guideStyles.description}>
+          Test your photography knowledge and save your score.
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={guideStyles.card}
+        onPress={() => navigation.navigate("QuizHistory")}
+      >
+        <Text style={guideStyles.title}>
+          🏆 Quiz History
+        </Text>
+
+        <Text style={guideStyles.description}>
+          View previous quiz results and your best score.
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
-
 // SCREEN 2 - LESSON LIST
-function LessonsScreen({ navigation }) {
-  
-  <TextInput
-  placeholder="Search photography lessons..."
-  value={search}
-  onChangeText={setSearch}
-/>
 
+function LessonsScreen({ navigation }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
 
   const filteredLessons = lessons.filter(item => {
+    const query = search.toLowerCase();
+
     const matchesSearch =
-      item.title.toLowerCase().includes(search.toLowerCase()) ||
-      item.summary.toLowerCase().includes(search.toLowerCase());
+      item.title.toLowerCase().includes(query) ||
+      item.summary.toLowerCase().includes(query);
 
     const matchesCategory =
       category === "All" || item.category === category;
@@ -162,28 +222,31 @@ function LessonsScreen({ navigation }) {
         onChangeText={setSearch}
       />
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filter}
-      >
-        {categories.map(cat => (
-          <TouchableOpacity
-            key={cat}
-            style={[
-              styles.filterButton,
-              category === cat && styles.activeFilter
-            ]}
-            onPress={() => setCategory(cat)}
-          >
-            <Text style={styles.filterText}>{cat}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <View style={styles.filterContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {categories.map(cat => (
+            <TouchableOpacity
+              key={cat}
+              style={[
+                styles.filterButton,
+                category === cat && styles.activeFilter
+              ]}
+              onPress={() => setCategory(cat)}
+            >
+              <Text style={styles.filterText}>
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       <FlatList
         data={filteredLessons}
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
           <LessonCard
             item={item}
@@ -199,22 +262,34 @@ function LessonsScreen({ navigation }) {
             No lessons found.
           </Text>
         }
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
 }
 
 // SCREEN 3 - LESSON DETAILS
+
 function DetailsScreen({ route }) {
-  const { favorites, toggleFavorite, completed, markCompleted } =
-    useApp();
+  const {
+    favorites,
+    toggleFavorite,
+    completed,
+    markCompleted
+  } = useApp();
 
   const lesson = lessons.find(
-    item => item.id === route.params.lessonId
+    item => item.id === route.params?.lessonId
   );
 
   if (!lesson) {
-    return <Text>Lesson not found.</Text>;
+    return (
+      <View style={styles.container}>
+        <Text style={styles.empty}>
+          Lesson not found.
+        </Text>
+      </View>
+    );
   }
 
   const isFavorite = favorites.includes(lesson.id);
@@ -222,7 +297,9 @@ function DetailsScreen({ route }) {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.heading}>{lesson.title}</Text>
+      <Text style={styles.heading}>
+        {lesson.title}
+      </Text>
 
       <Text style={styles.category}>
         {lesson.category} • {lesson.level}
@@ -240,7 +317,7 @@ function DetailsScreen({ route }) {
         Recommended Camera Settings
       </Text>
 
-      {lesson.settings.map((setting, index) => (
+      {(lesson.settings || []).map((setting, index) => (
         <Text key={index} style={styles.setting}>
           • {setting}
         </Text>
@@ -255,21 +332,28 @@ function DetailsScreen({ route }) {
       </Text>
 
       <MenuButton
-        title={isFavorite ? "Remove Favorite ★" : "Add to Favorites ☆"}
+        title={
+          isFavorite
+            ? "Remove Favorite ★"
+            : "Add to Favorites ☆"
+        }
         onPress={() => toggleFavorite(lesson.id)}
       />
 
       <MenuButton
-        title={isCompleted ? "Completed ✓" : "Mark as Completed"}
+        title={
+          isCompleted
+            ? "Completed ✓"
+            : "Mark as Completed"
+        }
         onPress={() => markCompleted(lesson.id)}
       />
     </ScrollView>
   );
 }
 
-
-
 // SCREEN 4 - FAVORITES
+
 function FavoritesScreen({ navigation }) {
   const { favorites } = useApp();
 
@@ -279,11 +363,13 @@ function FavoritesScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>My Favorites ★</Text>
+      <Text style={styles.heading}>
+        My Favorites ★
+      </Text>
 
       <FlatList
         data={favoriteLessons}
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
           <LessonCard
             item={item}
@@ -304,19 +390,26 @@ function FavoritesScreen({ navigation }) {
   );
 }
 
-
 // SCREEN 5 - PROGRESS
 
 function ProgressScreen() {
   const { completed } = useApp();
 
-  const percentage = Math.round(
-    (completed.length / lessons.length) * 100
-  );
+  const completedCount = lessons.filter(item =>
+    completed.includes(item.id)
+  ).length;
+
+  const percentage = lessons.length
+    ? Math.round(
+        (completedCount / lessons.length) * 100
+      )
+    : 0;
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.heading}>My Progress 📊</Text>
+      <Text style={styles.heading}>
+        My Progress 📊
+      </Text>
 
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>
@@ -326,6 +419,15 @@ function ProgressScreen() {
         <Text style={styles.heroText}>
           Keep learning and improving!
         </Text>
+
+        <View style={styles.progressBar}>
+          <View
+            style={[
+              styles.progressFill,
+              { width: `${percentage}%` }
+            ]}
+          />
+        </View>
       </View>
 
       <Text style={styles.progressText}>
@@ -333,73 +435,17 @@ function ProgressScreen() {
       </Text>
 
       <Text style={styles.progressText}>
-        Completed: {completed.length}
+        Completed: {completedCount}
       </Text>
 
       <Text style={styles.progressText}>
-        Remaining: {lessons.length - completed.length}
+        Remaining: {lessons.length - completedCount}
       </Text>
     </ScrollView>
   );
 }
 
-function PhotographyTipsScreen() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-
-  const categories = [
-    "All",
-    ...new Set(photographyTips.map(item => item.category))
-  ];
-
-  const filteredTips = photographyTips.filter(item =>
-    selectedCategory === "All" ||
-    selectedCategory === item.category
-  );
-
-  return (
-    <ScrollView style={guideStyles.container}>
-      <Text style={guideStyles.heading}>
-        Photography Tips 📸
-      </Text>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {categories.map(category => (
-          <TouchableOpacity
-            key={category}
-            style={[
-              guideStyles.categoryButton,
-              selectedCategory === category &&
-                guideStyles.activeCategory
-            ]}
-            onPress={() => setSelectedCategory(category)}
-          >
-            <Text style={guideStyles.categoryText}>
-              {category}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {filteredTips.map(item => (
-        <View key={item.id} style={guideStyles.card}>
-          <Text style={guideStyles.title}>
-            {item.title}
-          </Text>
-
-          <Text style={guideStyles.label}>
-            {item.category}
-          </Text>
-
-          <Text style={guideStyles.description}>
-            {item.description}
-          </Text>
-        </View>
-      ))}
-    </ScrollView>
-  );
-}
-
-
+// SCREEN 6 - CAMERA SETTINGS
 
 function CameraSettingsScreen() {
   const [search, setSearch] = useState("");
@@ -424,18 +470,26 @@ function CameraSettingsScreen() {
 
       {filteredSettings.map(item => (
         <View key={item.id} style={guideStyles.card}>
-          <Text style={guideStyles.title}>{item.name}</Text>
+          <Text style={guideStyles.title}>
+            {item.name}
+          </Text>
 
           <Text style={guideStyles.description}>
             {item.description}
           </Text>
 
-          <Text style={guideStyles.label}>Examples</Text>
+          <Text style={guideStyles.label}>
+            Examples
+          </Text>
+
           <Text style={guideStyles.description}>
             {item.examples}
           </Text>
 
-          <Text style={guideStyles.label}>Photography Tip</Text>
+          <Text style={guideStyles.label}>
+            Photography Tip
+          </Text>
+
           <Text style={guideStyles.description}>
             {item.tip}
           </Text>
@@ -451,13 +505,78 @@ function CameraSettingsScreen() {
   );
 }
 
+// SCREEN 7 - PHOTOGRAPHY TIPS
+
+function PhotographyTipsScreen() {
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
+
+  const tipCategories = [
+    "All",
+    ...new Set(photographyTips.map(item => item.category))
+  ];
+
+  const filteredTips = photographyTips.filter(item =>
+    selectedCategory === "All" ||
+    selectedCategory === item.category
+  );
+
+  return (
+    <ScrollView style={guideStyles.container}>
+      <Text style={guideStyles.heading}>
+        Photography Tips 📸
+      </Text>
+
+      <View style={guideStyles.filterContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          {tipCategories.map(category => (
+            <TouchableOpacity
+              key={category}
+              style={[
+                guideStyles.categoryButton,
+                selectedCategory === category &&
+                  guideStyles.activeCategory
+              ]}
+              onPress={() => setSelectedCategory(category)}
+            >
+              <Text style={guideStyles.categoryText}>
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {filteredTips.map(item => (
+        <View key={item.id} style={guideStyles.card}>
+          <Text style={guideStyles.title}>
+            {item.title}
+          </Text>
+
+          <Text style={guideStyles.label}>
+            {item.category}
+          </Text>
+
+          <Text style={guideStyles.description}>
+            {item.description}
+          </Text>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
 // MAIN APPLICATION
+
 export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [completed, setCompleted] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
-  // Load locally saved data
+  // Load locally stored favorites and progress
   useEffect(() => {
     async function loadData() {
       try {
@@ -475,7 +594,7 @@ export default function App() {
           setCompleted(JSON.parse(savedCompleted));
         }
       } catch (error) {
-        Alert.alert("Error", "Could not load saved data.");
+        console.warn("Could not load saved data:", error);
       } finally {
         setLoaded(true);
       }
@@ -484,19 +603,22 @@ export default function App() {
     loadData();
   }, []);
 
-  // Save data locally whenever it changes
+  // Save favorites and completed lessons
   useEffect(() => {
     if (!loaded) return;
 
-    AsyncStorage.setItem(
-      "favorites",
-      JSON.stringify(favorites)
-    );
+    async function saveData() {
+      try {
+        await AsyncStorage.multiSet([
+          ["favorites", JSON.stringify(favorites)],
+          ["completed", JSON.stringify(completed)]
+        ]);
+      } catch (error) {
+        console.warn("Could not save data:", error);
+      }
+    }
 
-    AsyncStorage.setItem(
-      "completed",
-      JSON.stringify(completed)
-    );
+    saveData();
   }, [favorites, completed, loaded]);
 
   const toggleFavorite = id => {
@@ -517,8 +639,10 @@ export default function App() {
 
   if (!loaded) {
     return (
-      <View style={styles.container}>
-        <Text>Loading ShutterMate...</Text>
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>
+          Loading ShutterMate...
+        </Text>
       </View>
     );
   }
@@ -534,29 +658,28 @@ export default function App() {
     >
       <NavigationContainer>
         <Stack.Navigator
+          initialRouteName="Home"
           screenOptions={{
-            headerStyle: { backgroundColor: "#171717" },
+            headerStyle: {
+              backgroundColor: "#171717"
+            },
             headerTintColor: "#FFFFFF",
-            contentStyle: { backgroundColor: "#101010" }
+            contentStyle: {
+              backgroundColor: "#101010"
+            }
           }}
         >
-          <Stack.Screen
-            name="CameraSettings"
-            component={CameraSettingsScreen}
-            options={{ title: "Camera Settings Guide" }}
-        />
-
-          <Stack.Screen
-            name="PhotographyTips"
-            component={PhotographyTipsScreen}
-             options={{ title: "Photography Tips" }}
-        />
           <Stack.Screen
             name="Home"
             component={HomeScreen}
             options={{ title: "ShutterMate" }}
           />
-
+          <Stack.Screen
+            name="QuizHistory"
+            component={QuizHistoryScreen}
+            options={{ title: "Quiz History" }}
+          />
+          
           <Stack.Screen
             name="Lessons"
             component={LessonsScreen}
@@ -580,20 +703,50 @@ export default function App() {
             component={ProgressScreen}
             options={{ title: "My Progress" }}
           />
+
+          <Stack.Screen
+            name="CameraSettings"
+            component={CameraSettingsScreen}
+            options={{ title: "Camera Settings Guide" }}
+          />
+
+          <Stack.Screen
+            name="PhotographyTips"
+            component={PhotographyTipsScreen}
+            options={{ title: "Photography Tips" }}
+          />
+
+          <Stack.Screen
+            name="Quiz"
+            component={QuizScreen}
+            options={{ title: "Photography Quiz" }}
+          />
+
         </Stack.Navigator>
       </NavigationContainer>
     </AppContext.Provider>
   );
 }
 
-
-
 // APPLICATION STYLES
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#101010",
     padding: 16
+  },
+
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: "#101010",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  loadingText: {
+    color: "#FFFFFF",
+    fontSize: 18
   },
 
   heading: {
@@ -625,7 +778,8 @@ const styles = StyleSheet.create({
   heroText: {
     color: "#FFFFFF",
     marginTop: 10,
-    fontSize: 15
+    fontSize: 15,
+    lineHeight: 23
   },
 
   sectionTitle: {
@@ -640,6 +794,20 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     marginVertical: 8
+  },
+
+  progressBar: {
+    height: 12,
+    backgroundColor: "#444444",
+    borderRadius: 10,
+    marginTop: 20,
+    overflow: "hidden"
+  },
+
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#D4AF37",
+    borderRadius: 10
   },
 
   menuButton: {
@@ -695,8 +863,8 @@ const styles = StyleSheet.create({
     marginBottom: 12
   },
 
-  filter: {
-    maxHeight: 48,
+  filterContainer: {
+    height: 48,
     marginBottom: 10
   },
 
@@ -708,7 +876,7 @@ const styles = StyleSheet.create({
   },
 
   activeFilter: {
-    backgroundColor: "#D6A84B"
+    backgroundColor: "#80691E"
   },
 
   filterText: {
@@ -728,7 +896,12 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
 
+  listContent: {
+    paddingBottom: 30
+  }
 });
+
+// GUIDE STYLES
 
 const guideStyles = StyleSheet.create({
   container: {
@@ -736,12 +909,14 @@ const guideStyles = StyleSheet.create({
     backgroundColor: "#101010",
     padding: 16
   },
+
   heading: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#D4AF37",
     marginBottom: 20
   },
+
   search: {
     backgroundColor: "#252525",
     color: "#FFFFFF",
@@ -749,42 +924,55 @@ const guideStyles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20
   },
+
   card: {
     backgroundColor: "#222222",
     padding: 18,
     borderRadius: 12,
     marginBottom: 15
   },
+
   title: {
     fontSize: 19,
     fontWeight: "bold",
     color: "#D4AF37",
     marginBottom: 10
   },
+
   label: {
     color: "#D4AF37",
     fontWeight: "bold",
     marginTop: 12,
     marginBottom: 5
   },
+
   description: {
     color: "#FFFFFF",
     fontSize: 15,
     lineHeight: 23
   },
+
+  filterContainer: {
+    height: 58,
+    marginBottom: 12
+  },
+
   categoryButton: {
     backgroundColor: "#252525",
     padding: 10,
     borderRadius: 20,
     marginRight: 8,
-    marginBottom: 18
+    alignSelf: "flex-start"
   },
+
   activeCategory: {
-    backgroundColor: "#D4AF37"
+    backgroundColor: "#80691E",
+    borderWidth: 1,
+    borderColor: "#D4AF37"
   },
+
   categoryText: {
     color: "#FFFFFF",
     fontWeight: "bold"
   }
 });
-
