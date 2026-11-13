@@ -101,6 +101,11 @@ export default function QuizHistoryScreen() {
           <View style={styles.card}>
             <Text style={styles.score}>
               Score: {item.score} / {item.total}
+              </Text>
+
+            <Text style={styles.percentage}>
+                    {item.total > 0
+                ? Math.round((item.score / item.total) * 100): 0}%
             </Text>
 
             <Text style={styles.date}>

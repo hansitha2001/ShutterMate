@@ -17,29 +17,35 @@ export default function QuizScreen() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("");
 
   const question = quizQuestions[currentIndex];
 
-  const saveResult = async (finalScore) => {
-    try {
-      const saved = await AsyncStorage.getItem("quizHistory");
-      const history = saved ? JSON.parse(saved) : [];
+  
+const saveResult = async (finalScore) => {
+  try {
+    const saved = await AsyncStorage.getItem("quizHistory");
+    const history = saved ? JSON.parse(saved) : [];
 
-      history.push({
-        id: Date.now().toString(),
-        score: finalScore,
-        total: quizQuestions.length,
-        date: new Date().toISOString()
-      });
+    history.push({
+      id: Date.now().toString(),
+      score: finalScore,
+      total: quizQuestions.length,
+      date: new Date().toISOString()
+    });
 
-      await AsyncStorage.setItem(
-        "quizHistory",
-        JSON.stringify(history)
-      );
-    } catch (error) {
-      Alert.alert("Error", "Unable to save quiz result.");
-    }
-  };
+    await AsyncStorage.setItem(
+      "quizHistory",
+      JSON.stringify(history)
+    );
+
+    setSaveStatus("Your quiz result has been saved.");
+  } catch (error) {
+    console.error("Failed to save quiz result:", error);
+    setSaveStatus("Could not save your result. Please try again.");
+  }
+};
+
 
   const handleNext = async () => {
     if (selectedAnswer === null) {
@@ -78,7 +84,7 @@ export default function QuizScreen() {
         </Text>
 
         <Text style={styles.description}>
-          Your quiz result has been saved.
+          {saveStatus}
         </Text>
 
         <TouchableOpacity

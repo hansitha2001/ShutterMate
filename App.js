@@ -971,6 +971,12 @@ const guideStyles = StyleSheet.create({
     borderColor: "#D4AF37"
   },
 
+  percentage: {
+  color: "#FFFFFF",
+  fontSize: 16,
+  marginTop: 5
+},
+
   categoryText: {
     color: "#FFFFFF",
     fontWeight: "bold"
