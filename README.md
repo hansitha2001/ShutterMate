@@ -104,6 +104,14 @@ Favorite selections are stored locally using AsyncStorage, allowing users to ret
 ShutterMate allows users to mark photography lessons as completed.
 The Progress screen helps users monitor their learning journey.
 Completed lesson information is stored locally using AsyncStorage.
+
+
+## Photography Quiz
+
+The photography quiz helps users test their knowledge.
+Users answer photography-related questions and receive a score based on their answers.
+The quiz provides an interactive way to review the topics covered in the application.
+  
   
 
 ## Developer
