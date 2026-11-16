@@ -99,7 +99,12 @@ The Favorites screen provides quick access to saved lessons.
 Favorite selections are stored locally using AsyncStorage, allowing users to retain their selections between app sessions.
   
   
+## Learning Progress
 
+ShutterMate allows users to mark photography lessons as completed.
+The Progress screen helps users monitor their learning journey.
+Completed lesson information is stored locally using AsyncStorage.
+  
 
 ## Developer
 
