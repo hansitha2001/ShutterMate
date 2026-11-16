@@ -88,10 +88,16 @@ ShutterMate includes nine screens:
 ## Offline Data Storage
 
 ShutterMate is designed to teach photography without relying on an online database.
-
 Photography lessons, camera guides, tips, and quiz questions are stored locally within the project.
-
 AsyncStorage is used to save user-specific information such as favorites, completed lessons, and quiz history.
+
+
+## Favorites Feature
+
+Users can save photography lessons as favorites.
+The Favorites screen provides quick access to saved lessons.
+Favorite selections are stored locally using AsyncStorage, allowing users to retain their selections between app sessions.
+  
   
 
 
