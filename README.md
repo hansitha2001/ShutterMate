@@ -33,30 +33,25 @@ Photography lessons, camera guides, tips, and quiz questions are stored in local
 
 AsyncStorage is used to save favorites, completed lessons, and quiz results on the device.
 
-## How to Run
 
-1. Install Node.js and Git.
-2. Clone the repository:
+## Installation and Setup
 
-   `git clone https://github.com/hansitha2001/ShutterMate.git`
+### Requirements
+- Node.js
+- Visual Studio Code
+- Expo Go
 
-3. Open the project folder:
+### How to Run ShutterMate
 
-   `cd ShutterMate`
+1. Clone the GitHub repository.
+2. Open the project folder in VS Code.
+3. Open the terminal.
+4. Install dependencies using `npm install`.
+5. Start the application using `npx expo start`.
+6. Scan the QR code using Expo Go.
 
-4. Install dependencies:
+ShutterMate is an offline photography learning application built with React Native and Expo.
 
-   `npm install`
-
-5. Start Expo:
-
-   `npx expo start`
-
-6. Open the app using Expo Go on a compatible mobile device.
-
-For browser testing:
-
-`npx expo start --web`
 
 ## Project Structure
 
