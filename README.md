@@ -70,6 +70,21 @@ ShutterMate/
 └── README.md
 ```
 
+## Application Screens
+
+ShutterMate includes nine screens:
+
+1. Home Screen - Main dashboard and navigation.
+2. Lessons Screen - Displays photography lessons.
+3. Lesson Details Screen - Shows detailed lesson content.
+4. Favorites Screen - Displays saved favorite lessons.
+5. Progress Screen - Tracks completed photography lessons.
+6. Camera Settings Guide - Explains camera settings.
+7. Photography Tips Screen - Provides photography tips.
+8. Quiz Screen - Tests photography knowledge.
+9. Quiz History Screen - Displays previous quiz results.
+
+
 ## Developer
 
 Individual React Native coursework project.
