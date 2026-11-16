@@ -112,6 +112,12 @@ The photography quiz helps users test their knowledge.
 Users answer photography-related questions and receive a score based on their answers.
 The quiz provides an interactive way to review the topics covered in the application.
   
+
+## Quiz History
+
+ShutterMate maintains a history of completed quizzes.
+Quiz results are saved locally using AsyncStorage.
+The Quiz History screen allows users to review their previous results and monitor their learning performance.
   
 
 ## Developer
