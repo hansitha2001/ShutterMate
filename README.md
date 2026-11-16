@@ -85,6 +85,16 @@ ShutterMate includes nine screens:
 9. Quiz History Screen - Displays previous quiz results.
 
 
+## Offline Data Storage
+
+ShutterMate is designed to teach photography without relying on an online database.
+
+Photography lessons, camera guides, tips, and quiz questions are stored locally within the project.
+
+AsyncStorage is used to save user-specific information such as favorites, completed lessons, and quiz history.
+  
+
+
 ## Developer
 
 Individual React Native coursework project.
